@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import './MusicForm.css';
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
 
 const MusicForm: React.FC = () => {
   const [title, setTitle] = useState('');
@@ -31,27 +33,16 @@ const MusicForm: React.FC = () => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <label>
-        Title:
-        <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} required />
-      </label>
+      <TextField id="outlined-basic" label="Title" variant="outlined" type="text" value={title} onChange={(e) => setTitle(e.target.value)} required />
       <br />
-      <label>
-        Artist:
-        <input type="text" value={artist} onChange={(e) => setArtist(e.target.value)} required />
-      </label>
+      <TextField id="outlined-basic" label="Artist" variant="outlined" type="text" value={artist} onChange={(e) => setArtist(e.target.value)} required />
       <br />
-      <label>
-        Album:
-        <input type="text" value={album} onChange={(e) => setAlbum(e.target.value)} required />
-      </label>
+      <TextField id="outlined-basic" label="Album" variant="outlined" type="text" value={album} onChange={(e) => setAlbum(e.target.value)} required />
       <br />
-      <label>
-        Link:
-        <input type="text" value={link} onChange={(e) => setLink(e.target.value)} required />
-      </label>
+      <TextField id="outlined-basic" label="Link" variant="outlined" type="text" value={link} onChange={(e) => setLink(e.target.value)} required />
       <br />
-      <button type="submit">Add Music</button>
+      {/* <button type="submit">Add Music</button> */}
+      <Button variant="contained">Add Music</Button>
     </form>
   );
 };

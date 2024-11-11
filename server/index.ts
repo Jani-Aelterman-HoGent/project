@@ -18,46 +18,68 @@ app.post('/music', async (req, res) => {
     });
 
     // Download the video using youtube-dl-exec
-    /*youtubedl(link, {
+    youtubedl(link, {
       output: path.join(__dirname, `../downloads/${title}.%(ext)s`),
-      exec: 'yt-dlp', // Explicitly set the path to yt-dlp
+      exec: 'yt-dlp',
     }).then(output => {
       console.log(output);
     }).catch(err => {
       console.error(err);
-    });*/
-
-    //const youtubedl = require('youtube-dl-exec')
-
-/*youtubedl('https://www.youtube.com/watch?v=6xKWiCMKKJg', {
-  dumpSingleJson: true,
-  noCheckCertificates: true,
-  noWarnings: true,
-  preferFreeFormats: true,
-  addHeader: ['referer:youtube.com', 'user-agent:googlebot']
-});*/
-
-    //youtubedl('https://www.youtube.com/watch?v=6xKWiCMKKJg');
-
-    /*import {exec} from 'child_process'
-//if you don't use module use this line instead:
-// const { exec } = require('child_process')
-
-exec('yt-dlp "https://music.youtube.com/watch?v=LA4MvUJHFbQ&si=to-mmxm1VDtbhXVy"', (error, stdout, stderr) => {
-  if (error) {
-    console.log(`error: ${error.message}`);
-  }
-  else if (stderr) {
-    console.log(`stderr: ${stderr}`);
-  }
-  else {
-    console.log(stdout);
-  }
-})*/
+    });
 
     res.status(201).json(newMusic);
   } catch (error) {
     res.status(500).json({ error: 'Failed to add music' });
+  }
+});
+
+app.post('/playlists', async (req, res) => {
+  const { name } = req.body;
+  try {
+    const newPlaylist = await prisma.playlist.create({
+      data: { name },
+    });
+    res.status(201).json(newPlaylist);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to create playlist' });
+  }
+});
+
+app.post('/playlists/:id/music', async (req, res) => {
+  const { id } = req.params;
+  const { musicId } = req.body;
+  try {
+    const updatedPlaylist = await prisma.playlist.update({
+      where: { id: Number(id) },
+      data: {
+        music: {
+          connect: { id: Number(musicId) },
+        },
+      },
+    });
+    res.status(200).json(updatedPlaylist);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to add music to playlist' });
+  }
+});
+
+app.get('/playlists/:id/download', async (req, res) => {
+  const { id } = req.params;
+  try {
+    const playlist = await prisma.playlist.findUnique({
+      where: { id: Number(id) },
+      include: { music: true },
+    });
+
+    if (!playlist) {
+      return res.status(404).json({ error: 'Playlist not found' });
+    }
+
+    // Logic to download the playlist
+    // For simplicity, we just return the playlist data
+    res.status(200).json(playlist);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to download playlist' });
   }
 });
 

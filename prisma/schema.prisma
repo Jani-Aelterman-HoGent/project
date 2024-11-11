@@ -14,13 +14,19 @@ datasource db {
 }
 
 model Music {
-  id     Int    @id @default(autoincrement())
-  title  String
-  artist String
-  album  String
-  link   String
+  id       Int       @id @default(autoincrement())
+  title    String
+  artist   String
+  album    String
+  link     String
+  playlists Playlist[]
 }
 
+model Playlist {
+  id     Int     @id @default(autoincrement())
+  name   String
+  music  Music[]
+}
 
 //model Album {
 //  id     Int    @id @default(autoincrement())
